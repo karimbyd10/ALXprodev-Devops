@@ -1,11 +1,16 @@
 #!/bin/bash
 
-# Extract name, type, height, and weight from pokemon.json
+# Extract data using jq
 name=$(jq -r '.name' pokemon.json | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
+height=$(jq -r '.height' pokemon.json)
+weight=$(jq -r '.weight' pokemon.json)
 type=$(jq -r '.types[0].type.name' pokemon.json | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
-weight=$(jq -r '.weight' pokemon.json | awk '{printf "%d", $1/10}')
-height=$(jq -r '.height' pokemon.json | awk '{printf "%.1f", $1/10}')
 
-# Output in the exact required format
-echo "$name is of type $type, weighs ${weight}kg, and is ${height}m tall."
+# Convert height from decimeters to meters
+formatted_height=$(echo "scale=1; $height/10" | bc)
+# Convert weight from hectograms to kilograms
+formatted_weight=$(echo "scale=1; $weight/10" | bc)
+
+# Print formatted output
+echo "$name is of type $type, weighs ${formatted_weight%.*}kg, and is ${formatted_height%.*}m tall."
 
