@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Extract data using jq
-name=$(jq -r '.name' pokemon.json | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
-height=$(jq -r '.height' pokemon.json)
-weight=$(jq -r '.weight' pokemon.json)
-type=$(jq -r '.types[0].type.name' pokemon.json | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
-
-# Convert height from decimeters to meters
-formatted_height=$(echo "scale=1; $height/10" | bc)
-# Convert weight from hectograms to kilograms
-formatted_weight=$(echo "scale=1; $weight/10" | bc)
-
-# Print formatted output
-echo "$name is of type $type, weighs ${formatted_weight%.*}kg, and is ${formatted_height%.*}m tall."
+# Extract data from pokemon.json
+jq -r '.name + " " + (.types[0].type.name) + " " + (.weight|tostring) + " " + (.height|tostring)' pokemon.json |
+awk '{
+    # Capitalize first letters
+    name=toupper(substr($1,1,1)) substr($1,2)
+    type=toupper(substr($2,1,1)) substr($2,2)
+    # Convert weight to kg (hectograms / 10)
+    weight=int($3/10)
+    # Convert height to meters (decimeters / 10, 1 decimal)
+    height=$4/10
+    printf "%s is of type %s, weighs %dkg, and is %.1fm tall.\n", name, type, weight, height
+}' |
+sed 's/ //g'  # Example use of sed (can adjust to remove extra spaces if needed)
 
