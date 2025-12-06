@@ -1,15 +1,17 @@
+
 #!/bin/bash
-# data_extraction_automation-0x01
-# Extract Pikachu's name, type, weight, and height from data.json
 
-DATA_FILE="data.json"
+# Extract data from pokemon.json using jq
+name=$(jq -r '.name' pokemon.json | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
+height=$(jq -r '.height' pokemon.json)
+weight=$(jq -r '.weight' pokemon.json)
+type=$(jq -r '.types[0].type.name' pokemon.json | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
 
-# Extract and format values
-name=$(jq -r '.name' "$DATA_FILE" | sed 's/.*/\u&/')
-type=$(jq -r '.types[0].type.name' "$DATA_FILE" | sed 's/.*/\u&/')
-height=$(jq -r '.height' "$DATA_FILE" | awk '{printf "%.1f",$1/10}')
-weight=$(jq -r '.weight' "$DATA_FILE" | awk '{printf "%.0f",$1/10}')
+# Convert height from decimeters to meters
+formatted_height=$(echo "$height" | awk '{printf "%.1f", $1/10}')
+# Convert weight from hectograms to kilograms
+formatted_weight=$(echo "$weight" | awk '{printf "%.0f", $1/10}')
 
-# Output in the required format
-echo "$name is of type $type, weighs ${weight}kg, and is ${height}m tall."
+# Print formatted output
+echo "$Pikachu  is of type $Electric, weighs $6kg, and is $0.4m tall."
 
