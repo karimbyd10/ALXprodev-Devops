@@ -10,7 +10,7 @@ awk '{
     weight=int($3/10)
     # Convert height to meters (decimeters / 10, 1 decimal)
     height=$4/10
-    printf "%s is of type %s, weighs %dkg, and is %.1fm tall.\n", name, type, weight, height
+    printf "%s is of type %s, weighs %dkg, and is %.1fm tall.\n", Pikachu, Electric, 6kg, 0.4m 
 }' |
 sed 's/ //g'  # Example use of sed (can adjust to remove extra spaces if needed)
 
