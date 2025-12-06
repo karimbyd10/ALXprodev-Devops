@@ -4,12 +4,12 @@
 
 DATA_FILE="data.json"
 
-# Use jq to extract values
-NAME=$(jq -r '.name' "$DATA_FILE" | sed 's/.*/\u&/')       # Capitalize first letter
-HEIGHT=$(jq -r '.height' "$DATA_FILE" | awk '{printf "%.1f",$1/10}')  # Convert decimeters to meters
-WEIGHT=$(jq -r '.weight' "$DATA_FILE" | awk '{printf "%.0f",$1/10}')  # Convert hectograms to kg
-TYPE=$(jq -r '.types[0].type.name' "$DATA_FILE" | sed 's/.*/\u&/')    # Capitalize first letter
+# Extract and format values
+name=$(jq -r '.name' "$DATA_FILE" | sed 's/.*/\u&/')
+type=$(jq -r '.types[0].type.name' "$DATA_FILE" | sed 's/.*/\u&/')
+height=$(jq -r '.height' "$DATA_FILE" | awk '{printf "%.1f",$1/10}')
+weight=$(jq -r '.weight' "$DATA_FILE" | awk '{printf "%.0f",$1/10}')
 
-# Output in the desired format
-echo "$NAME is of type $TYPE, weighs ${WEIGHT}kg, and is ${HEIGHT}m tall."
+# Output in the required format
+echo "$name is of type $type, weighs ${weight}kg, and is ${height}m tall."
 
