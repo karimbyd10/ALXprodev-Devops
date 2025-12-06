@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# Directory to save Pokémon data
 output_dir="pokemon_data"
 mkdir -p "$output_dir"
 
-# List of Pokémon to fetch
 pokemon_list=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
 
-# Function to fetch a single Pokémon
+pids=()  # Array to store background process PIDs
+
 fetch_pokemon() {
     local pokemon=$1
     echo "Fetching data for $pokemon..."
@@ -20,13 +19,16 @@ fetch_pokemon() {
     fi
 }
 
-# Launch all fetches in background
+# Launch all fetches in background and store PIDs
 for pokemon in "${pokemon_list[@]}"; do
     fetch_pokemon "$pokemon" &
+    pids+=($!)
 done
 
-# Wait for all background jobs to finish
-wait
+# Wait for all background jobs and handle stuck processes
+for pid in "${pids[@]}"; do
+    wait $pid || kill $pid
+done
 
 echo "All Pokémon data fetched."
 
